@@ -25,8 +25,9 @@ dependencies:
     sdk: flutter
   sqflite: ^1.3.0
   path: ^1.7.0
-  fsearch: ^1.0.1
-
+  theme_provider: ^0.3.3
+  substring_highlight: ^0.1.2
+  provider: ^4.3.2+1
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -71,12 +72,11 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
-  #         style: italic
+  fonts:
+    - family: NotoSansMyanmar
+      fonts:
+        - asset: assets/fonts/NotoSansMyanmar-Regular.otf
+        - asset: assets/fonts/NotoSansMyanmar-Bold.otf
   #   - family: Trajan Pro
   #     fonts:
   #       - asset: fonts/TrajanPro.ttf
