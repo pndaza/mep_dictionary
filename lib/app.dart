@@ -1,25 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mep_dictionary/data/theme.dart';
-import 'package:provider/provider.dart';
-import 'package:theme_provider/theme_provider.dart';
+import 'package:mep_dictionary/screen/home/theme_settings_controller.dart';
 
-import 'business_logic/view_models/definition_list_view_model.dart';
-import 'ui/screen/home/home.dart';
+import 'screen/home/home.dart';
 
-class App extends StatelessWidget {
+class App extends ConsumerWidget {
   @override
-  Widget build(BuildContext context) {
-    final List<AppTheme> themes = MyTheme.fetchAll();
-    
-    return ThemeProvider(
-        saveThemesOnChange: true,
-        loadThemeOnInit: true,
-        defaultThemeId: themes.first.id,
-        themes: themes,
-        child: MaterialApp(
-          debugShowCheckedModeBanner: false,
-            home: ChangeNotifierProvider(
-              create: (_) => DefinitionListViewModel(),
-              child: ThemeConsumer(child: Home()))));
+  Widget build(BuildContext context, ScopedReader watch) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: MyTheme.light,
+      darkTheme: MyTheme.dark,
+      themeMode: watch(themeSettingsProvider),
+      home: Home(),
+    );
   }
 }
