@@ -4,18 +4,17 @@ import 'package:mep_dictionary/model/definition.dart';
 import 'package:mep_dictionary/screen/home/theme_settings_controller.dart';
 import 'package:mep_dictionary/screen/home/widgets/definition_list_view.dart';
 import 'package:mep_dictionary/screen/home/widgets/info_dialog.dart';
-import 'package:riverpod/riverpod.dart';
 
 import 'home_controller.dart';
 import 'widgets/search_bar.dart';
 
 class Home extends ConsumerWidget {
   @override
-  Widget build(BuildContext context, ScopedReader watch) {
-    // final controller = watch(homeControllerProvider.notifier);
-    final definitionState = watch(homeControllerProvider);
-    final themeMode = watch(themeSettingsProvider);
-    final notifier = watch(homeControllerProvider.notifier);
+  Widget build(BuildContext context, WidgetRef ref) {
+    // final controller = ref.watch(homeControllerProvider.notifier);
+    final definitionState = ref.watch(homeControllerProvider);
+    final themeMode = ref.watch(themeSettingsProvider);
+    final notifier = ref.watch(homeControllerProvider.notifier);
 
     return Scaffold(
         appBar: AppBar(
@@ -24,11 +23,12 @@ class Home extends ConsumerWidget {
           actions: [
             IconButton(
                 onPressed: () {
-                  context
+                  ref
                       .read(homeControllerProvider.notifier)
-                      .onFavouritesClicked();
+                      .onDisplayModeChanged();
                 },
-                icon: notifier.isFavouriteMode
+                icon: notifier.definitionDisplayMode ==
+                        DefinitionDisplayMode.favourite
                     ? Icon(
                         Icons.favorite,
                         color: Colors.white,
@@ -36,7 +36,7 @@ class Home extends ConsumerWidget {
                     : Icon(Icons.favorite_outline)),
             IconButton(
                 onPressed: () {
-                  context.read(themeSettingsProvider.notifier).toggleTheme();
+                  ref.read(themeSettingsProvider.notifier).toggleTheme();
                 },
                 icon: themeMode == ThemeMode.dark
                     ? Icon(
@@ -61,12 +61,10 @@ class Home extends ConsumerWidget {
               SearchFilterBar(
                 searchMode: FilterMode.Anywhere,
                 onFilterTextChanged: (text) {
-                  context
-                      .read(homeControllerProvider.notifier)
-                      .onTextChanged(text);
+                  ref.read(homeControllerProvider.notifier).onTextChanged(text);
                 },
                 onFilterModeChanged: (value) {
-                  context
+                  ref
                       .read(homeControllerProvider.notifier)
                       .onModeChanged(value);
                 },
@@ -112,12 +110,12 @@ class NoDataView extends StatelessWidget {
   }
 }
 
-class DataView extends StatelessWidget {
+class DataView extends ConsumerWidget {
   const DataView({Key? key, required this.definitions}) : super(key: key);
   final List<Definition> definitions;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
@@ -129,12 +127,10 @@ class DataView extends StatelessWidget {
           SearchFilterBar(
             searchMode: FilterMode.Anywhere,
             onFilterTextChanged: (text) {
-              context.read(homeControllerProvider.notifier).onTextChanged(text);
+              ref.read(homeControllerProvider.notifier).onTextChanged(text);
             },
             onFilterModeChanged: (value) {
-              context
-                  .read(homeControllerProvider.notifier)
-                  .onModeChanged(value);
+              ref.read(homeControllerProvider.notifier).onModeChanged(value);
             },
           ),
           SizedBox(

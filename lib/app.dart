@@ -7,12 +7,12 @@ import 'screen/home/home.dart';
 
 class App extends ConsumerWidget {
   @override
-  Widget build(BuildContext context, ScopedReader watch) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: MyTheme.light,
       darkTheme: MyTheme.dark,
-      themeMode: watch(themeSettingsProvider),
+      themeMode: ref.watch(themeSettingsProvider),
       home: Home(),
     );
   }

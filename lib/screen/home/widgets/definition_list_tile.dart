@@ -1,39 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mep_dictionary/screen/home/favourite_controller.dart';
 import 'package:substring_highlight/substring_highlight.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../model/definition.dart';
 import '../home_controller.dart';
 
-class DefinitionListTile extends StatefulWidget {
+class DefinitionListTile extends ConsumerWidget {
   final Definition definition;
 
   DefinitionListTile({required this.definition});
 
   @override
-  State<DefinitionListTile> createState() => _DefinitionListTileState();
-}
-
-class _DefinitionListTileState extends State<DefinitionListTile> {
-  late bool isInFavourites;
-  late String textToHighlight;
-  // style for normal text
-
-  @override
-  void initState() {
-    textToHighlight =
-        context.read(homeControllerProvider.notifier).textToHighlight;
-    final favourites = context.read(favouritesProvider);
-    isInFavourites = favourites.contains(widget.definition.id);
-
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    print('build list tile- id : ${widget.definition.id}');
-    print('is in favourites: $isInFavourites');
+  Widget build(BuildContext context, WidgetRef ref) {
+    final textToHighlight =
+        ref.read(homeControllerProvider.notifier).textToHighlight;
+    final isInFavourites = ref.watch(favouritesProvider.select<bool>(
+        (List<int> favourites) => favourites.contains(definition.id)));
+    print('build list tile- id : ${definition.id}');
+    // print('is in favourites: $isInFavourites');
     final textStyle =
         Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 18);
     final textStyleHighlight = TextStyle(
@@ -53,19 +38,19 @@ class _DefinitionListTileState extends State<DefinitionListTile> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SubstringHighlight(
-                      text: widget.definition.myanmar,
+                      text: definition.myanmar,
                       term: textToHighlight,
                       textStyle: textStyle,
                       textStyleHighlight: textStyleHighlight,
                     ),
                     SubstringHighlight(
-                      text: widget.definition.english,
+                      text: definition.english,
                       term: textToHighlight,
                       textStyle: textStyle,
                       textStyleHighlight: textStyleHighlight,
                     ),
                     SubstringHighlight(
-                      text: widget.definition.pali,
+                      text: definition.pali,
                       term: textToHighlight,
                       textStyle: textStyle,
                       textStyleHighlight: textStyleHighlight,
@@ -75,10 +60,10 @@ class _DefinitionListTileState extends State<DefinitionListTile> {
               ),
               IconButton(
                   onPressed: () {
-                    context
-                        .read(favouritesProvider.notifier)
-                        .onFavouriteChanged(widget.definition.id);
-                    setState(() => isInFavourites = !isInFavourites);
+                    final controller = ref.read(favouritesProvider.notifier);
+                    isInFavourites
+                        ? controller.removeFromFavourite(definition.id)
+                        : controller.addToFavourite(definition.id);
                   },
                   icon: isInFavourites
                       ? Icon(
