@@ -1,5 +1,4 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mep_dictionary/screen/home/home_controller.dart';
 import 'package:mep_dictionary/services/favourites_service.dart';
 
 final favouritesProvider =
@@ -17,11 +16,11 @@ class FavouritesController extends StateNotifier<List<int>> {
     state = [...state, id];
     // save to shared preference
     favouritesService.favourites = state;
-    final controller = read(homeControllerProvider.notifier);
-    final displayMode = controller.definitionDisplayMode;
-    if (displayMode == DefinitionDisplayMode.favourite) {
-      controller.onFavouriteListChange();
-    }
+    // final controller = read(homeViewControllerProvider.notifier);
+    // final displayMode = controller.displayMode;
+    // if (displayMode == DisplayMode.favourite) {
+    //   controller.onFavouriteListChange();
+    // }
     print(state);
   }
 
@@ -32,12 +31,12 @@ class FavouritesController extends StateNotifier<List<int>> {
     state = [...state];
     // save to shared preference
     favouritesService.favourites = state;
-    read(homeControllerProvider.notifier).onFavouriteListChange();
-    final controller = read(homeControllerProvider.notifier);
-    final displayMode = controller.definitionDisplayMode;
-    if (displayMode == DefinitionDisplayMode.favourite) {
-      controller.onFavouriteListChange();
-    }
+    // read(homeControllerProvider.notifier).onFavouriteListChange();
+    // final controller = read(homeControllerProvider.notifier);
+    // final displayMode = controller.displayMode;
+    // if (displayMode == DisplayMode.favourite) {
+    //   controller.onFavouriteListChange();
+    // }
     print(state);
   }
 }

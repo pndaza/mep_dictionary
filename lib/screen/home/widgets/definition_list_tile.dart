@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mep_dictionary/screen/home/favourite_controller.dart';
 import 'package:substring_highlight/substring_highlight.dart';
-
+import '../../../providers/favourite_controller.dart';
 import '../../../model/definition.dart';
-import '../home_controller.dart';
+import '../../../providers/home_controller.dart';
 
 class DefinitionListTile extends ConsumerWidget {
   final Definition definition;
@@ -13,18 +12,21 @@ class DefinitionListTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final textToHighlight =
-        ref.read(homeControllerProvider.notifier).textToHighlight;
     final isInFavourites = ref.watch(favouritesProvider.select<bool>(
         (List<int> favourites) => favourites.contains(definition.id)));
-    print('build list tile- id : ${definition.id}');
-    // print('is in favourites: $isInFavourites');
+    // get hightlighted text
+    final textToHighlight =
+        ref.read(homeViewControllerProvider.notifier).textToHighlight;
+    // text style for normal text
     final textStyle =
         Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 18);
+    // filterd word will be highlight
+    // text sytle for highlight
     final textStyleHighlight = TextStyle(
         fontSize: 18.0,
         fontWeight: FontWeight.bold,
         color: Theme.of(context).colorScheme.secondary);
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 0.0),
       child: Card(

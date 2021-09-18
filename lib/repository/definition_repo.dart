@@ -1,5 +1,5 @@
 import '/model/definition.dart';
-import '../database_provider.dart';
+import '../services/database_provider.dart';
 
 abstract class DefinitionRepository {
   late final DatabaseProvider databaseProvider;

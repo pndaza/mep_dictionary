@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mep_dictionary/data/theme.dart';
-import 'package:mep_dictionary/screen/home/theme_settings_controller.dart';
+import 'package:mep_dictionary/providers/theme_settings_controller.dart';
 
 import 'screen/home/home.dart';
 

@@ -12,7 +12,7 @@ class ThemeSettingsController extends StateNotifier<ThemeMode> {
   final ThemeService themeService;
   ThemeMode get themeMode => themeService.themeMode;
 
-  void toggleTheme() {
+  void onToggleTheme() {
     final newThemeMode =
         themeMode == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark;
     state = newThemeMode;
