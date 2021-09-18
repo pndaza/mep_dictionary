@@ -110,9 +110,9 @@ class _FilterModeButtonState extends State<FilterModeButton> {
   @override
   Widget build(BuildContext context) {
     return FilterChip(
-      label: Text('အစတူ'),
+      label: Text('အစတူ', textScaleFactor: 1.0),
       labelStyle: TextStyle(
-          fontSize: 12,
+          fontSize: 16,
           color: _previousValue == true
               ? Theme.of(context).colorScheme.onPrimary
               : Theme.of(context).colorScheme.onSurface),

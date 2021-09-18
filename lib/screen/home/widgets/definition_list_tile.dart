@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mep_dictionary/providers/font_size_settings_controller.dart';
 import 'package:substring_highlight/substring_highlight.dart';
 import '../../../providers/favourite_controller.dart';
 import '../../../model/definition.dart';
@@ -15,15 +16,16 @@ class DefinitionListTile extends ConsumerWidget {
     final isInFavourites = ref.watch(favouritesProvider.select<bool>(
         (List<int> favourites) => favourites.contains(definition.id)));
     // get hightlighted text
+    final fontSize = ref.watch(fontSizeSettingsProvider);
     final textToHighlight =
         ref.read(homeViewControllerProvider.notifier).textToHighlight;
     // text style for normal text
     final textStyle =
-        Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: 18);
+        Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: fontSize);
     // filterd word will be highlight
     // text sytle for highlight
     final textStyleHighlight = TextStyle(
-        fontSize: 18.0,
+        fontSize: fontSize,
         fontWeight: FontWeight.bold,
         color: Theme.of(context).colorScheme.secondary);
 

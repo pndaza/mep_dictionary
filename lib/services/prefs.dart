@@ -2,9 +2,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 const String IS_DARK_MODE = 'is_dark_mode';
 const String FAVOURITES = 'favourites';
+const String FONTSIZE = 'font_size';
 
 const bool DEFAULT_IS_DARK_MODE = false;
 const List<String> DEFAULT_FAVOURITES = <String>[];
+const double DEFAULT_FONTSZIE = 16.0;
 
 class Prefs {
   //
@@ -21,5 +23,10 @@ class Prefs {
   // favourites
   static List<String> get favourites =>
       instance.getStringList(FAVOURITES) ?? DEFAULT_FAVOURITES;
-  static set favourites(List<String> value) => instance.setStringList(FAVOURITES, value);
+  static set favourites(List<String> value) =>
+      instance.setStringList(FAVOURITES, value);
+
+  static double get fontSize =>
+      instance.getDouble(FONTSIZE) ?? DEFAULT_FONTSZIE;
+  static set fontSize(double value) => instance.setDouble(FONTSIZE, value);
 }

@@ -12,7 +12,8 @@ enum DefinitionState { loading, loaded }
 final _filteredWordProvider = StateProvider<String>((_) => '');
 final _filteredModeProvider =
     StateProvider<FilterMode>((_) => FilterMode.Anywhere);
-final _displayModeProvider = StateProvider<DisplayMode>((_) => DisplayMode.all);
+final displayModeProvider = StateNotifierProvider<DisplayModeController,DisplayMode>((ref) =>
+ DisplayModeController(ref.read));
 
 final _definitionRepoProvider =
     Provider((_) => DefinitionDatabaseRepository(DatabaseProvider()));
@@ -23,7 +24,7 @@ final _allDefinitionsProvider =
 final definitionsProvider = Provider<List<Definition>>((ref) {
   final filteredWord = ref.watch(_filteredWordProvider).state;
   final filteredMode = ref.watch(_filteredModeProvider).state;
-  final displayMode = ref.watch(_displayModeProvider).state;
+  final displayMode = ref.watch(displayModeProvider);
   final definitions = ref.watch(_allDefinitionsProvider).state;
   final favourites = ref.watch(favouritesProvider);
 
@@ -48,13 +49,20 @@ final homeViewControllerProvider =
     StateNotifierProvider<HomeViewController, DefinitionState>(
         (ref) => HomeViewController(ref.read));
 
+class DisplayModeController extends StateNotifier<DisplayMode> {
+  DisplayModeController(this.read) : super(DisplayMode.all);
+  final Reader read;
+
+  void onToggle() {
+    state = state == DisplayMode.all ? DisplayMode.favourite : DisplayMode.all;
+  }
+}
+
 class HomeViewController extends StateController<DefinitionState> {
   HomeViewController(this.read) : super(DefinitionState.loading) {
     _init();
   }
   final Reader read;
-
-  DisplayMode get displayMode => read(_displayModeProvider).state;
 
   void _init() async {
     final repo = read(_definitionRepoProvider);
@@ -74,15 +82,6 @@ class HomeViewController extends StateController<DefinitionState> {
   }
 
   String get textToHighlight => read(_filteredWordProvider).state;
-
-  void onToggleDisplayMode() {
-    final currentMode = read(_displayModeProvider).state;
-    if (currentMode == DisplayMode.all) {
-      read(_displayModeProvider).state = DisplayMode.favourite;
-    } else {
-      read(_displayModeProvider).state = DisplayMode.all;
-    }
-  }
 }
 
 class _FilterHelper {
