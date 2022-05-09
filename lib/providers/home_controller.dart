@@ -69,11 +69,9 @@ class HomeViewController extends StateController<DefinitionState> {
 
   void _init() async {
     final repo = read(_definitionRepoProvider);
-    // fetch all definions from database and save to definitions
-    read(_allDefinitionsProvider.notifier).state = await repo.fetchFirst100();
-    state = DefinitionState.loaded;
     // fetchs all definitions and caches
     read(_allDefinitionsProvider.notifier).state = await repo.fetchAll();
+    state = DefinitionState.loaded;
 
     _isAllCached = true;
     // state = DefinitionState.loaded;

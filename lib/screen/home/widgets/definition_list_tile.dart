@@ -37,10 +37,10 @@ class DefinitionListTile extends ConsumerWidget {
 
     return GestureDetector(
       onTap: () {},
-      onLongPress: (() async {
-        await FlutterClipboard.copy(
-            '${definition.myanmar}\n${definition.english}\n${definition.pali}');
-        final url = Uri.parse(kReportUrl);
+      onDoubleTap: (() async {
+        final entryParmater =
+            '${definition.myanmar}\n${definition.english}\n${definition.pali}\npage-${definition.pageNumber}';
+        final url = Uri.parse(kReportUrl + entryParmater);
         if (await canLaunchUrl(url)) {
           launchUrl(url);
         } else {
@@ -50,7 +50,7 @@ class DefinitionListTile extends ConsumerWidget {
           ).show(context);
         }
       }),
-      onDoubleTap: () async {
+      onLongPress: () async {
         await FlutterClipboard.copy(
             '${definition.myanmar}\n${definition.english}\n${definition.pali}');
         MotionToast.success(

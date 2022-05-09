@@ -1,5 +1,20 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="mm.pndaza.mep_dictionary">
+
+      <!-- The INTERNET permission is required for development. Specifically,
+       flutter needs it to communicate with the running application
+       to allow setting breakpoints, to provide hot reload, etc.
+  -->
+  <uses-permission android:name="android.permission.INTERNET"/>
+
+  <!-- Provide required visibility configuration for API level 30 and above -->
+  <queries>
+    <intent>
+      <action android:name="android.intent.action.VIEW" />
+      <data android:scheme="https" />
+    </intent>
+  </queries>
+
    <application
         android:label="MEP Dictionary"
         android:name="${applicationName}"

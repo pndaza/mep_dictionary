@@ -18,31 +18,40 @@ class Home extends ConsumerWidget {
     final definitionState = ref.watch(homeViewControllerProvider);
 
     return BackdropScaffold(
-        appBar: BackdropAppBar(
-            // leading: Icon(Icons.settings),
-            // elevation: 1.0,
-            automaticallyImplyLeading: false,
-            backgroundColor: Theme.of(context).colorScheme.primary,
-            title: Text(
-              'ဦးဟုတ်စိန် အဘိဓာန်',
-              style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
+      appBar: BackdropAppBar(
+          // leading: Icon(Icons.settings),
+          // elevation: 1.0,
+          automaticallyImplyLeading: false,
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          title: Text(
+            'ဦးဟုတ်စိန် အဘိဓာန်',
+            style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
+          ),
+          centerTitle: true,
+          actions: const [
+            DisplayModeToggleButton(),
+            BackdropToggleButton(
+              icon: AnimatedIcons.close_menu,
             ),
-            centerTitle: true,
-            actions: const [
-              DisplayModeToggleButton(),
-              BackdropToggleButton(
-                icon: AnimatedIcons.close_menu,
-              ),
-            ]),
-        stickyFrontLayer: true,
-        backLayer: const Settings(),
-        frontLayer: Padding(
-          padding: const EdgeInsets.only(bottom: 16.0),
-          child: definitionState == DefinitionState.loading
-              ? const LoadingView()
-              : const DataView(),
-        ),
-        );
+          ]),
+      stickyFrontLayer: true,
+      backLayer: const Settings(),
+      frontLayer: Padding(
+        padding: const EdgeInsets.only(bottom: 16.0),
+        child: definitionState == DefinitionState.loading
+            ? const LoadingView()
+            : const DataView(),
+      ),
+      bottomNavigationBar: SearchFilterBar(
+        searchMode: FilterMode.anywhere,
+        onFilterTextChanged: (text) {
+          ref.read(homeViewControllerProvider.notifier).onTextChanged(text);
+        },
+        onFilterModeChanged: (value) {
+          ref.read(homeViewControllerProvider.notifier).onModeChanged(value);
+        },
+      ),
+    );
   }
 }
 
@@ -90,27 +99,9 @@ class DataView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final definitions = ref.watch(definitionsProvider);
     return Padding(
-      padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 0),
-      child: Column(
-        children: [
-          Expanded(
-              child: definitions.isEmpty
-                  ? const NoDataView()
-                  : DefinitionListView(definitions: definitions)),
-          SearchFilterBar(
-            searchMode: FilterMode.anywhere,
-            onFilterTextChanged: (text) {
-              ref.read(homeViewControllerProvider.notifier).onTextChanged(text);
-            },
-            onFilterModeChanged: (value) {
-              ref
-                  .read(homeViewControllerProvider.notifier)
-                  .onModeChanged(value);
-            },
-          ),
-          // SizedBox(height: 16)
-        ],
-      ),
-    );
+        padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 0),
+        child: definitions.isEmpty
+            ? const NoDataView()
+            : DefinitionListView(definitions: definitions));
   }
 }
