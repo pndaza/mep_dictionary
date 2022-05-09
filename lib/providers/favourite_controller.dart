@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mep_dictionary/services/favourites_service.dart';
 
@@ -21,7 +22,7 @@ class FavouritesController extends StateNotifier<List<int>> {
     // if (displayMode == DisplayMode.favourite) {
     //   controller.onFavouriteListChange();
     // }
-    print(state);
+    debugPrint(state.toString());
   }
 
   void removeFromFavourite(int id) {
@@ -37,6 +38,6 @@ class FavouritesController extends StateNotifier<List<int>> {
     // if (displayMode == DisplayMode.favourite) {
     //   controller.onFavouriteListChange();
     // }
-    print(state);
+    debugPrint(state.toString());
   }
 }

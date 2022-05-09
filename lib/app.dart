@@ -6,6 +6,8 @@ import 'package:mep_dictionary/providers/theme_settings_controller.dart';
 import 'screen/home/home.dart';
 
 class App extends ConsumerWidget {
+  const App({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp(
@@ -13,7 +15,7 @@ class App extends ConsumerWidget {
       theme: MyTheme.light,
       darkTheme: MyTheme.dark,
       themeMode: ref.watch(themeSettingsProvider),
-      home: Home(),
+      home: const Home(),
     );
   }
 }

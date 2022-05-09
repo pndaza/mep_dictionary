@@ -19,19 +19,19 @@ class Settings extends StatelessWidget {
       height: 250,
       child: Column(
         children: [
-          Divider(),
+          const Divider(),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Card(
               color: Theme.of(context).colorScheme.primary,
               elevation: 8.0,
               child: ListTile(
-                leading: Icon(
+                leading: const Icon(
                   Icons.brightness_2_outlined,
                   color: Colors.white,
                 ),
                 title: Text('Dark Mode', style: backdropTextStyle),
-                trailing: _ThemeToggleSwitch(),
+                trailing: const _ThemeToggleSwitch(),
               ),
             ),
           ),
@@ -41,24 +41,24 @@ class Settings extends StatelessWidget {
               color: Theme.of(context).colorScheme.primary,
               elevation: 8.0,
               child: ListTile(
-                leading: Icon(
+                leading: const Icon(
                   Icons.font_download_outlined,
                   color: Colors.white,
                 ),
                 title: Text('Font Size', style: backdropTextStyle),
-                trailing: FontSizeControlView(),
+                trailing: const FontSizeControlView(),
               ),
             ),
           ),
-          Divider(),
+          const Divider(),
           ListTile(
-            leading: Icon(
+            leading: const Icon(
               Icons.info_outline,
               color: Colors.white,
             ),
             title: Text('About Dictionary App', style: backdropTextStyle),
             onTap: () async => showDialog<void>(
-                context: context, builder: (_) => InfoDialog()),
+                context: context, builder: (_) => const InfoDialog()),
           ),
         ],
       ),

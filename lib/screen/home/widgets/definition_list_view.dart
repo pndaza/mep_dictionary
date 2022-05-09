@@ -5,8 +5,8 @@ import 'definition_list_tile.dart';
 
 class DefinitionListView extends StatelessWidget {
   final List<Definition> definitions;
-
-  DefinitionListView({required this.definitions});
+  const DefinitionListView({Key? key, required this.definitions})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {

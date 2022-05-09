@@ -11,9 +11,10 @@ enum DefinitionState { loading, loaded }
 
 final _filteredWordProvider = StateProvider<String>((_) => '');
 final _filteredModeProvider =
-    StateProvider<FilterMode>((_) => FilterMode.Anywhere);
-final displayModeProvider = StateNotifierProvider<DisplayModeController,DisplayMode>((ref) =>
- DisplayModeController(ref.read));
+    StateProvider<FilterMode>((_) => FilterMode.anywhere);
+final displayModeProvider =
+    StateNotifierProvider<DisplayModeController, DisplayMode>(
+        (ref) => DisplayModeController(ref.read));
 
 final _definitionRepoProvider =
     Provider((_) => DefinitionDatabaseRepository(DatabaseProvider()));
@@ -22,10 +23,10 @@ final _allDefinitionsProvider =
     StateProvider<List<Definition>>((_) => <Definition>[]);
 //
 final definitionsProvider = Provider<List<Definition>>((ref) {
-  final filteredWord = ref.watch(_filteredWordProvider).state;
-  final filteredMode = ref.watch(_filteredModeProvider).state;
+  final filteredWord = ref.watch(_filteredWordProvider);
+  final filteredMode = ref.watch(_filteredModeProvider);
   final displayMode = ref.watch(displayModeProvider);
-  final definitions = ref.watch(_allDefinitionsProvider).state;
+  final definitions = ref.watch(_allDefinitionsProvider);
   final favourites = ref.watch(favouritesProvider);
 
   if (displayMode == DisplayMode.favourite) {
@@ -64,24 +65,32 @@ class HomeViewController extends StateController<DefinitionState> {
   }
   final Reader read;
 
+  bool _isAllCached = false;
+
   void _init() async {
     final repo = read(_definitionRepoProvider);
     // fetch all definions from database and save to definitions
-    read(_allDefinitionsProvider).state = await repo.fetchAllDefinitions();
+    read(_allDefinitionsProvider.notifier).state = await repo.fetchFirst100();
     state = DefinitionState.loaded;
+    // fetchs all definitions and caches
+    read(_allDefinitionsProvider.notifier).state = await repo.fetchAll();
+
+    _isAllCached = true;
+    // state = DefinitionState.loaded;
   }
 
   void onTextChanged(String text) {
+    if (!_isAllCached) return;
     // update filterWord state
-    read(_filteredWordProvider).state = text;
+    read(_filteredWordProvider.notifier).state = text;
   }
 
   void onModeChanged(FilterMode searchMode) {
     // update filterWord state
-    read(_filteredModeProvider).state = searchMode;
+    read(_filteredModeProvider.notifier).state = searchMode;
   }
 
-  String get textToHighlight => read(_filteredWordProvider).state;
+  String get textToHighlight => read(_filteredWordProvider);
 }
 
 class _FilterHelper {
@@ -90,22 +99,27 @@ class _FilterHelper {
 
   static List<Definition> _filterOnEnglish(List<Definition> definitions,
       String filteredWord, FilterMode filteredMode) {
+    final filteredWordLC = filteredWord.toLowerCase();
     return definitions
-        .where((definition) => filteredMode == FilterMode.Start
-            ? definition.english.toLowerCase().startsWith(filteredWord)
-            : definition.english.toLowerCase().contains(filteredWord))
+        .where(
+          (definition) => filteredMode == FilterMode.start
+              ? definition.english.toLowerCase().startsWith(filteredWordLC)
+              : definition.english.toLowerCase().contains(filteredWordLC),
+        )
         .toList();
   }
 
   static List<Definition> _filterOnOther(List<Definition> definitions,
       String filteredWord, FilterMode filteredMode) {
-    filteredWord = MMStringNormalizer.normalize(filteredWord);
+    final filteredWordNL = MMStringNormalizer.normalize(filteredWord);
     return definitions
-        .where((definition) => filteredMode == FilterMode.Start
-            ? definition.myanmar.startsWith(filteredWord) ||
-                definition.pali.startsWith(filteredWord)
-            : definition.myanmar.contains(filteredWord) ||
-                definition.pali.contains(filteredWord))
+        .where(
+          (definition) => filteredMode == FilterMode.start
+              ? definition.myanmar.startsWith(filteredWordNL) ||
+                  definition.pali.replaceAll('.', '').startsWith(filteredWordNL)
+              : definition.myanmar.contains(filteredWordNL) ||
+                  definition.pali.replaceAll('.', '').contains(filteredWordNL),
+        )
         .toList();
   }
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-enum FilterMode { Start, Anywhere }
+enum FilterMode { start, anywhere }
 
 class SearchFilterBar extends StatefulWidget {
   const SearchFilterBar(
@@ -24,7 +24,7 @@ class _SearchFilterBarState extends State<SearchFilterBar> {
     // textEditingController = TextEditingController();
     textEditingController.addListener(() {
       setState(() {
-        hasText = textEditingController.text.length > 0;
+        hasText = textEditingController.text.isNotEmpty;
       });
     });
     super.initState();
@@ -39,7 +39,7 @@ class _SearchFilterBarState extends State<SearchFilterBar> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.all(16.0),
+      margin: const EdgeInsets.all(8.0),
       decoration: BoxDecoration(
         // color: Theme.of(context).colorScheme.background,
         borderRadius: BorderRadius.circular(32.0),
@@ -54,7 +54,7 @@ class _SearchFilterBarState extends State<SearchFilterBar> {
             onChanged: (text) {
               widget.onFilterTextChanged(text);
             },
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               border: InputBorder.none,
               fillColor: Colors.transparent,
               filled: true,
@@ -62,7 +62,7 @@ class _SearchFilterBarState extends State<SearchFilterBar> {
                 Icons.search,
                 color: Colors.grey,
               ),
-              hintStyle: new TextStyle(color: Colors.grey),
+              hintStyle: TextStyle(color: Colors.grey),
             ),
           )),
           hasText
@@ -70,16 +70,11 @@ class _SearchFilterBarState extends State<SearchFilterBar> {
                   textEditingController.text = '';
                   widget.onFilterTextChanged('');
                 })
-              : SizedBox(
-                  width: 0,
-                  height: 0,
-                ),
+              : const SizedBox(width: 0, height: 0),
           FilterModeButton(
               searchMode: widget.searchMode,
               onChanged: widget.onFilterModeChanged),
-          SizedBox(
-            width: 8,
-          )
+          const SizedBox(width: 8)
         ],
       ),
     );
@@ -101,7 +96,7 @@ class _FilterModeButtonState extends State<FilterModeButton> {
   bool _previousValue = false;
   @override
   void initState() {
-    if (widget.searchMode == FilterMode.Start) {
+    if (widget.searchMode == FilterMode.start) {
       _previousValue = true;
     }
     super.initState();
@@ -110,7 +105,7 @@ class _FilterModeButtonState extends State<FilterModeButton> {
   @override
   Widget build(BuildContext context) {
     return FilterChip(
-      label: Text('အစတူ', textScaleFactor: 1.0),
+      label: const Text('အစတူ', textScaleFactor: 1.0),
       labelStyle: TextStyle(
           fontSize: 16,
           color: _previousValue == true
@@ -123,9 +118,9 @@ class _FilterModeButtonState extends State<FilterModeButton> {
         setState(() {
           _previousValue = value;
           if (value) {
-            widget.onChanged(FilterMode.Start);
+            widget.onChanged(FilterMode.start);
           } else {
-            widget.onChanged(FilterMode.Anywhere);
+            widget.onChanged(FilterMode.anywhere);
           }
         });
       },
@@ -141,7 +136,7 @@ class ClearButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return IconButton(
       onPressed: onClicked,
-      icon: Icon(Icons.clear_rounded),
+      icon: const Icon(Icons.clear_rounded),
     );
   }
 }

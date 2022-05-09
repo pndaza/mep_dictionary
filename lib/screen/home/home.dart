@@ -10,6 +10,8 @@ import './widgets/search_bar.dart';
 import './widgets/settings.dart';
 
 class Home extends ConsumerWidget {
+  const Home({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // final controller = ref.watch(homeControllerProvider.notifier);
@@ -26,20 +28,21 @@ class Home extends ConsumerWidget {
               style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
             ),
             centerTitle: true,
-            actions: [
+            actions: const [
               DisplayModeToggleButton(),
               BackdropToggleButton(
                 icon: AnimatedIcons.close_menu,
               ),
             ]),
         stickyFrontLayer: true,
-        backLayer: Settings(),
+        backLayer: const Settings(),
         frontLayer: Padding(
           padding: const EdgeInsets.only(bottom: 16.0),
           child: definitionState == DefinitionState.loading
-              ? LoadingView()
-              : DataView(),
-        ));
+              ? const LoadingView()
+              : const DataView(),
+        ),
+        );
   }
 }
 
@@ -49,12 +52,12 @@ class DisplayModeToggleButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final displayMode = ref.watch(displayModeProvider);
-    print(displayMode);
+    // debugPrint(displayMode.toString());
     return IconButton(
         onPressed: () => ref.read(displayModeProvider.notifier).onToggle(),
         icon: displayMode == DisplayMode.favourite
-            ? Icon(Icons.favorite, color: Colors.white)
-            : Icon(Icons.favorite_outline));
+            ? const Icon(Icons.favorite, color: Colors.white)
+            : const Icon(Icons.favorite_outline));
   }
 }
 
@@ -63,7 +66,7 @@ class LoadingView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return const Center(
       child: CircularProgressIndicator(),
     );
   }
@@ -74,7 +77,7 @@ class NoDataView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return const Center(
       child: Text('ဘာမှ မတွေ့ပါ'),
     );
   }
@@ -87,15 +90,15 @@ class DataView extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final definitions = ref.watch(definitionsProvider);
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 0),
       child: Column(
         children: [
           Expanded(
               child: definitions.isEmpty
-                  ? NoDataView()
+                  ? const NoDataView()
                   : DefinitionListView(definitions: definitions)),
           SearchFilterBar(
-            searchMode: FilterMode.Anywhere,
+            searchMode: FilterMode.anywhere,
             onFilterTextChanged: (text) {
               ref.read(homeViewControllerProvider.notifier).onTextChanged(text);
             },

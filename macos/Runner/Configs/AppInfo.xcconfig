@@ -11,4 +11,4 @@ PRODUCT_NAME = mep_dictionary
 PRODUCT_BUNDLE_IDENTIFIER = mm.pndaza.mepDictionary
 
 // The copyright displayed in application information
-PRODUCT_COPYRIGHT = Copyright © 2021 mm.pndaza. All rights reserved.
+PRODUCT_COPYRIGHT = Copyright © 2022 mm.pndaza. All rights reserved.

@@ -1,16 +1,17 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:typed_data';
 
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mep_dictionary/data/constants.dart';
+import 'package:mep_dictionary/services/prefs.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
 class DatabaseProvider {
-
-  static final String _assetsFolder = 'assets';
-  static final String _databasePath = 'database';
-  static final String _databaseName = 'mep.db';
+  static const String _assetsFolder = 'assets';
+  static const String _databasePath = 'database';
+  static const String _databaseName = 'mep.db';
 
   DatabaseProvider._();
   static final DatabaseProvider _instance = DatabaseProvider._();
@@ -26,27 +27,35 @@ class DatabaseProvider {
 
 // Open Assets Database
   _initDatabase() async {
-    print('initializing Database');
+    // print('initializing Database');
     var dbPath = await getDatabasesPath();
     var path = join(dbPath, _databaseName);
 
-    var exists = await databaseExists(path);
-    if (!exists) {
-      print('creating new copy from asset');
+    final exists = await databaseExists(path);
+    final savedDatabaseVersion = Prefs.databaseVersion;
+    if (!exists || savedDatabaseVersion < kDatabaseVersion) {
+      // print('creating new copy from asset');
       try {
         await Directory(dirname(path)).create(recursive: true);
       } catch (_) {}
 
+      // update case
+      if (exists) {
+        deleteDatabase(path);
+        debugPrint('update mode');
+      }
+
       // Copy from asset
-      ByteData data =
-          await rootBundle.load(join(_assetsFolder, _databasePath, _databaseName));
+      ByteData data = await rootBundle
+          .load(join(_assetsFolder, _databasePath, _databaseName));
       List<int> bytes =
           data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
 
       await File(path).writeAsBytes(bytes, flush: true);
-    } else {
-      print('opening existing database');
+      // saved db version to shared pref
+      Prefs.databaseVersion = kDatabaseVersion;
     }
+
     return await openDatabase(path);
   }
 

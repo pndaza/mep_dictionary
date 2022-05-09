@@ -14,10 +14,10 @@ class InfoDialog extends StatelessWidget {
             'သိကောင်းစရာ',
             style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
           ))),
-      content: SingleChildScrollView(child: Text(kInfoText)),
+      content: const SingleChildScrollView(child: Text(kInfoText)),
       actions: <Widget>[
         ElevatedButton(
-          child: Text('OK'),
+          child: const Text('OK'),
           onPressed: () {
             Navigator.pop(context);
           },

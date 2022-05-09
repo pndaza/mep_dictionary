@@ -1,15 +1,21 @@
+import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mep_dictionary/data/constants.dart';
 import 'package:mep_dictionary/providers/font_size_settings_controller.dart';
+import 'package:motion_toast/motion_toast.dart';
+import 'package:motion_toast/resources/arrays.dart';
 import 'package:substring_highlight/substring_highlight.dart';
-import '../../../providers/favourite_controller.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 import '../../../model/definition.dart';
+import '../../../providers/favourite_controller.dart';
 import '../../../providers/home_controller.dart';
 
 class DefinitionListTile extends ConsumerWidget {
+  const DefinitionListTile({Key? key, required this.definition})
+      : super(key: key);
   final Definition definition;
-
-  DefinitionListTile({required this.definition});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -29,56 +35,127 @@ class DefinitionListTile extends ConsumerWidget {
         fontWeight: FontWeight.bold,
         color: Theme.of(context).colorScheme.secondary);
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 0.0),
-      child: Card(
-        elevation: 8.0,
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SubstringHighlight(
-                      text: definition.myanmar,
-                      term: textToHighlight,
-                      textStyle: textStyle,
-                      textStyleHighlight: textStyleHighlight,
-                    ),
-                    SubstringHighlight(
-                      text: definition.english,
-                      term: textToHighlight,
-                      textStyle: textStyle,
-                      textStyleHighlight: textStyleHighlight,
-                    ),
-                    SubstringHighlight(
-                      text: definition.pali,
-                      term: textToHighlight,
-                      textStyle: textStyle,
-                      textStyleHighlight: textStyleHighlight,
-                    ),
-                  ],
+    return GestureDetector(
+      onTap: () {},
+      onLongPress: (() async {
+        await FlutterClipboard.copy(
+            '${definition.myanmar}\n${definition.english}\n${definition.pali}');
+        final url = Uri.parse(kReportUrl);
+        if (await canLaunchUrl(url)) {
+          launchUrl(url);
+        } else {
+          MotionToast.error(
+            description: const Text("Cannot report. Something's wrong"),
+            width: 300,
+          ).show(context);
+        }
+      }),
+      onDoubleTap: () async {
+        await FlutterClipboard.copy(
+            '${definition.myanmar}\n${definition.english}\n${definition.pali}');
+        MotionToast.success(
+          // title: const Text('Favourite'),
+          description: const Text('ကော်ပီကူးယူပြီးပါပြီ'),
+          width: 300,
+          animationType: ANIMATION.fromBottom,
+        ).show(context);
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 0.0),
+        child: Card(
+          elevation: 8.0,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SubstringHighlight(
+                        text: definition.myanmar,
+                        term: textToHighlight,
+                        textStyle: textStyle,
+                        textStyleHighlight: textStyleHighlight,
+                      ),
+                      SubstringHighlight(
+                        text: definition.english,
+                        term: textToHighlight,
+                        textStyle: textStyle,
+                        textStyleHighlight: textStyleHighlight,
+                      ),
+                      SubstringHighlight(
+                        text: definition.pali,
+                        term: textToHighlight,
+                        textStyle: textStyle,
+                        textStyleHighlight: textStyleHighlight,
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              IconButton(
-                  onPressed: () {
-                    final controller = ref.read(favouritesProvider.notifier);
-                    isInFavourites
-                        ? controller.removeFromFavourite(definition.id)
-                        : controller.addToFavourite(definition.id);
-                  },
-                  icon: isInFavourites
-                      ? Icon(
-                          Icons.favorite,
-                          color: Colors.redAccent,
-                        )
-                      : Icon(Icons.favorite_outline))
-            ],
+                IconButton(
+                    onPressed: () async {
+                      final controller = ref.read(favouritesProvider.notifier);
+
+                      if (!isInFavourites) {
+                        // adding to favourites list
+                        controller.addToFavourite(definition.id);
+                        // show result to user with snackbark
+                        MotionToast.success(
+                          // title: const Text('Favourite'),
+                          description: const Text(
+                              'စိတ်ကြိုက်စာရင်းသို့ \nထည့်သွင်းလိုက်ပါပြီ'),
+                          width: 300,
+                          animationType: ANIMATION.fromBottom,
+                        ).show(context);
+                        // ScaffoldMessenger.of(context).showSnackBar(_buildSnackBar(
+                        //     context, 'စိတ်ကြိုက်စာရင်းသို့ ထည့်သွင်းလိုက်ပါပြီ'));
+                      } else {
+                        // removing from favourites list
+                        controller.removeFromFavourite(definition.id);
+                        // show result to user with snackbark
+                        MotionToast.delete(
+                          // title: const Text('Favourite'),
+                          description: const Text(
+                              'စိတ်ကြိုက်စာရင်းင်းမှ \nပယ်ဖျက်လိုက်ပါပြီ'),
+                          width: 300,
+                          animationType: ANIMATION.fromBottom,
+                          animationCurve: Curves.easeOut,
+                        ).show(context);
+                        // ScaffoldMessenger.of(context).showSnackBar(_buildSnackBar(
+                        //     context, 'စိတ်ကြိုက်စာရင်းမှ ပယ်ဖျက်လိုက်ပါပြီ။'));
+                      }
+                    },
+                    icon: isInFavourites
+                        ? const Icon(
+                            Icons.favorite,
+                            color: Colors.redAccent,
+                          )
+                        : const Icon(Icons.favorite_outline))
+              ],
+            ),
           ),
         ),
       ),
     );
   }
+/*
+  SnackBar _buildSnackBar(BuildContext context, String message) {
+    final textColor = Theme.of(context).colorScheme.onPrimary;
+    final backgroundColor = Theme.of(context).colorScheme.primary;
+    return SnackBar(
+      content: Text(
+        message,
+        textAlign: TextAlign.center,
+        style: TextStyle(color: textColor),
+      ),
+      backgroundColor: backgroundColor,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(32.0)),
+      width: 350,
+      behavior: SnackBarBehavior.floating,
+      duration: const Duration(milliseconds: 2000),
+    );
+  }
+
+  */
 }
