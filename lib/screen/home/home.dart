@@ -38,18 +38,28 @@ class Home extends ConsumerWidget {
       backLayer: const Settings(),
       frontLayer: Padding(
         padding: const EdgeInsets.only(bottom: 16.0),
-        child: definitionState == DefinitionState.loading
-            ? const LoadingView()
-            : const DataView(),
-      ),
-      bottomNavigationBar: SearchFilterBar(
-        searchMode: FilterMode.anywhere,
-        onFilterTextChanged: (text) {
-          ref.read(homeViewControllerProvider.notifier).onTextChanged(text);
-        },
-        onFilterModeChanged: (value) {
-          ref.read(homeViewControllerProvider.notifier).onModeChanged(value);
-        },
+        child: Column(
+          children: [
+            Expanded(
+              child: definitionState == DefinitionState.loading
+                  ? const LoadingView()
+                  : const DataView(),
+            ),
+            SearchFilterBar(
+              searchMode: FilterMode.anywhere,
+              onFilterTextChanged: (text) {
+                ref
+                    .read(homeViewControllerProvider.notifier)
+                    .onTextChanged(text);
+              },
+              onFilterModeChanged: (value) {
+                ref
+                    .read(homeViewControllerProvider.notifier)
+                    .onModeChanged(value);
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
