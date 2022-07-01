@@ -1,7 +1,7 @@
 const String kAssetsFolder = 'assets';
 const String kDatabasePath = 'database';
 const String kDatabaseName = 'mep.db';
-const int kDatabaseVersion = 2;
+const int kDatabaseVersion = 3;
 // const String kReportUrl = 'https://forms.gle/sHmsQpACWK5fBLPz5';
 const String kReportUrl =
     'https://docs.google.com/forms/d/e/1FAIpQLSfBAhm984ULMbWOpyWBE1UtwR4u3h3axnpKDL4jTb1pQMGsrA/viewform?usp=pp_url&entry.1689566593=';
