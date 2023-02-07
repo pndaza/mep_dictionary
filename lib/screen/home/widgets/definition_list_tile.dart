@@ -1,5 +1,7 @@
-import 'package:clipboard/clipboard.dart';
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mep_dictionary/data/constants.dart';
 import 'package:mep_dictionary/providers/font_size_settings_controller.dart';
@@ -51,8 +53,10 @@ class DefinitionListTile extends ConsumerWidget {
         }
       }),
       onLongPress: () async {
-        await FlutterClipboard.copy(
-            '${definition.myanmar}\n${definition.english}\n${definition.pali}');
+        await Clipboard.setData(ClipboardData(
+            text:
+                '${definition.myanmar}\n${definition.english}\n${definition.pali}'));
+                
         MotionToast.success(
           // title: const Text('Favourite'),
           description: const Text('ကော်ပီကူးယူပြီးပါပြီ'),

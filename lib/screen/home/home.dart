@@ -1,6 +1,4 @@
-import 'package:backdrop/app_bar.dart';
-import 'package:backdrop/button.dart';
-import 'package:backdrop/scaffold.dart';
+import 'package:backdrop/backdrop.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

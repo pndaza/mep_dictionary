@@ -12,8 +12,9 @@ class SearchFilterBar extends StatefulWidget {
   final FilterMode searchMode;
   final void Function(String) onFilterTextChanged;
   final void Function(FilterMode) onFilterModeChanged;
+
   @override
-  _SearchFilterBarState createState() => _SearchFilterBarState();
+  State<SearchFilterBar> createState() => _SearchFilterBarState();
 }
 
 class _SearchFilterBarState extends State<SearchFilterBar> {
@@ -89,7 +90,7 @@ class FilterModeButton extends StatefulWidget {
   final Function(FilterMode) onChanged;
 
   @override
-  _FilterModeButtonState createState() => _FilterModeButtonState();
+  State<FilterModeButton> createState() => _FilterModeButtonState();
 }
 
 class _FilterModeButtonState extends State<FilterModeButton> {
