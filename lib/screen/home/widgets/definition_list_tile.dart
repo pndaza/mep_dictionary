@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:contextmenu/contextmenu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -37,40 +38,21 @@ class DefinitionListTile extends ConsumerWidget {
         fontWeight: FontWeight.bold,
         color: Theme.of(context).colorScheme.secondary);
 
-    return GestureDetector(
-      onTap: () {},
-      onDoubleTap: (() async {
-        final entryParmater =
-            '${definition.myanmar}\n${definition.english}\n${definition.pali}\npage-${definition.pageNumber}';
-        final url = Uri.parse(kReportUrl + entryParmater);
-        if (await canLaunchUrl(url)) {
-          launchUrl(url);
-        } else {
-          MotionToast.error(
-            description: const Text("Cannot report. Something's wrong"),
-            width: 300,
-          ).show(context);
-        }
-      }),
-      onLongPress: () async {
-        await Clipboard.setData(ClipboardData(
-            text:
-                '${definition.myanmar}\n${definition.english}\n${definition.pali}'));
-                
-        MotionToast.success(
-          // title: const Text('Favourite'),
-          description: const Text('ကော်ပီကူးယူပြီးပါပြီ'),
-          constraints: const BoxConstraints(
-            minWidth: 300,
-            maxWidth: 350,
-            minHeight: 100,
-            maxHeight: 100,
-          ),
-          animationType: AnimationType.fromBottom,
-          animationDuration: const Duration(milliseconds: 500),
-          toastDuration: const Duration(milliseconds: 1500),
-        ).show(context);
-      },
+    return ContextMenuArea(
+      width: 150,
+      builder: (context) => [
+        ListTile(
+          trailing: const Icon(Icons.copy),
+          onTap: () => _onPressedCopyButton(context),
+          title: const Text('Copy'),
+        ),
+        const Divider(),
+        ListTile(
+          trailing: const Icon(Icons.report),
+          onTap: () => _onPressedReportButton(context),
+          title: const Text('Report'),
+        ),
+      ],
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 0.0),
         child: Card(
@@ -152,9 +134,12 @@ class DefinitionListTile extends ConsumerWidget {
                       }
                     },
                     icon: isInFavourites
-                        ? const Icon(
+                        ? Icon(
                             Icons.favorite,
-                            color: Colors.redAccent,
+                            color:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? Colors.greenAccent
+                                    : Colors.redAccent,
                           )
                         : const Icon(Icons.favorite_outline))
               ],
@@ -163,6 +148,41 @@ class DefinitionListTile extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  void _onPressedCopyButton(BuildContext context) async {
+    await Clipboard.setData(ClipboardData(
+        text:
+            '${definition.myanmar}\n${definition.english}\n${definition.pali}'));
+
+    MotionToast.success(
+      // title: const Text('Favourite'),
+      description: const Text('ကော်ပီကူးယူပြီးပါပြီ'),
+      constraints: const BoxConstraints(
+        minWidth: 300,
+        maxWidth: 350,
+        minHeight: 100,
+        maxHeight: 100,
+      ),
+      animationType: AnimationType.fromBottom,
+      animationDuration: const Duration(milliseconds: 500),
+      toastDuration: const Duration(milliseconds: 1500),
+    ).show(context);
+  }
+
+  void _onPressedReportButton(BuildContext context) async {
+    final entryParmater =
+        '${definition.myanmar}\n${definition.english}\n${definition.pali}\npage-${definition.pageNumber}';
+    final url = Uri.parse(kReportUrl + entryParmater);
+    if (await canLaunchUrl(url)) {
+      launchUrl(url);
+    } else {
+      MotionToast.error(
+        description: const Text(
+            "Cannot report. Something's wrong."),
+        width: 300,
+      ).show(context);
+    }
   }
 /*
   SnackBar _buildSnackBar(BuildContext context, String message) {

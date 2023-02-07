@@ -22,6 +22,17 @@ class _DefinitionListViewState extends State<DefinitionListView> {
   }
 
   @override
+  void didUpdateWidget(covariant DefinitionListView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.definitions.length != oldWidget.definitions.length) {
+      Future.delayed(
+        const Duration(milliseconds: 50),
+        (() => controller.jumpTo(0.0)),
+      );
+    }
+  }
+
+  @override
   void dispose() {
     controller.dispose();
     super.dispose();
@@ -36,9 +47,11 @@ class _DefinitionListViewState extends State<DefinitionListView> {
       childCount: childCount,
     );
 
-    return ScrollConfiguration(
-      behavior: ScrollConfiguration.of(context).copyWith(scrollbars: true),
+    return Scrollbar(
+      controller: controller,
+      interactive: true,
       child: CustomScrollView(
+        controller: controller,
         slivers: [
           SuperSliverList(delegate: sliverDelegate),
         ],
