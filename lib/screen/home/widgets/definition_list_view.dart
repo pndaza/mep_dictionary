@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:super_sliver_list/super_sliver_list.dart';
 
 import '../../../model/definition.dart';
 import 'definition_list_tile.dart';
@@ -28,14 +29,19 @@ class _DefinitionListViewState extends State<DefinitionListView> {
 
   @override
   Widget build(BuildContext context) {
-       return ScrollConfiguration(
-      behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
-      child: ListView.builder(
-        // controller: controller,
-        itemCount: widget.definitions.length,
-        itemBuilder: (context, index) {
-          return DefinitionListTile(definition: widget.definitions[index]);
-        },
+    final childCount = widget.definitions.length;
+    final sliverDelegate = SliverChildBuilderDelegate(
+      (context, index) =>
+          DefinitionListTile(definition: widget.definitions[index]),
+      childCount: childCount,
+    );
+
+    return ScrollConfiguration(
+      behavior: ScrollConfiguration.of(context).copyWith(scrollbars: true),
+      child: CustomScrollView(
+        slivers: [
+          SuperSliverList(delegate: sliverDelegate),
+        ],
       ),
     );
   }

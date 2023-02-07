@@ -56,8 +56,15 @@ class DefinitionListTile extends ConsumerWidget {
         MotionToast.success(
           // title: const Text('Favourite'),
           description: const Text('ကော်ပီကူးယူပြီးပါပြီ'),
-          width: 300,
-          animationType: ANIMATION.fromBottom,
+          constraints: const BoxConstraints(
+            minWidth: 300,
+            maxWidth: 350,
+            minHeight: 100,
+            maxHeight: 100,
+          ),
+          animationType: AnimationType.fromBottom,
+          animationDuration: const Duration(milliseconds: 500),
+          toastDuration: const Duration(milliseconds: 1500),
         ).show(context);
       },
       child: Padding(
@@ -105,8 +112,15 @@ class DefinitionListTile extends ConsumerWidget {
                           // title: const Text('Favourite'),
                           description: const Text(
                               'စိတ်ကြိုက်စာရင်းသို့ \nထည့်သွင်းလိုက်ပါပြီ'),
-                          width: 300,
-                          animationType: ANIMATION.fromBottom,
+                          constraints: const BoxConstraints(
+                            minWidth: 300,
+                            maxWidth: 350,
+                            minHeight: 100,
+                            maxHeight: 100,
+                          ),
+                          animationType: AnimationType.fromBottom,
+                          animationDuration: const Duration(milliseconds: 500),
+                          toastDuration: const Duration(milliseconds: 1500),
                         ).show(context);
                         // ScaffoldMessenger.of(context).showSnackBar(_buildSnackBar(
                         //     context, 'စိတ်ကြိုက်စာရင်းသို့ ထည့်သွင်းလိုက်ပါပြီ'));
@@ -117,10 +131,17 @@ class DefinitionListTile extends ConsumerWidget {
                         MotionToast.delete(
                           // title: const Text('Favourite'),
                           description: const Text(
-                              'စိတ်ကြိုက်စာရင်းင်းမှ \nပယ်ဖျက်လိုက်ပါပြီ'),
-                          width: 300,
-                          animationType: ANIMATION.fromBottom,
+                              'စိတ်ကြိုက်စာရင်းမှ \nပယ်ဖျက်လိုက်ပါပြီ'),
+                          constraints: const BoxConstraints(
+                            minWidth: 300,
+                            maxWidth: 350,
+                            minHeight: 100,
+                            maxHeight: 100,
+                          ),
+                          animationType: AnimationType.fromBottom,
                           animationCurve: Curves.easeOut,
+                          animationDuration: const Duration(milliseconds: 500),
+                          toastDuration: const Duration(milliseconds: 1500),
                         ).show(context);
                         // ScaffoldMessenger.of(context).showSnackBar(_buildSnackBar(
                         //     context, 'စိတ်ကြိုက်စာရင်းမှ ပယ်ဖျက်လိုက်ပါပြီ။'));
