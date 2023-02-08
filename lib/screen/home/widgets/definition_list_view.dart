@@ -1,3 +1,4 @@
+import 'package:context_menus/context_menus.dart';
 import 'package:flutter/material.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 
@@ -47,14 +48,16 @@ class _DefinitionListViewState extends State<DefinitionListView> {
       childCount: childCount,
     );
 
-    return Scrollbar(
-      controller: controller,
-      interactive: true,
-      child: CustomScrollView(
+    return ContextMenuOverlay(
+      child: Scrollbar(
         controller: controller,
-        slivers: [
-          SuperSliverList(delegate: sliverDelegate),
-        ],
+        interactive: true,
+        child: CustomScrollView(
+          controller: controller,
+          slivers: [
+            SuperSliverList(delegate: sliverDelegate),
+          ],
+        ),
       ),
     );
   }

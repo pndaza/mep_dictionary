@@ -1,6 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:contextmenu/contextmenu.dart';
+import 'package:context_menus/context_menus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -38,21 +38,43 @@ class DefinitionListTile extends ConsumerWidget {
         fontWeight: FontWeight.bold,
         color: Theme.of(context).colorScheme.secondary);
 
-    return ContextMenuArea(
-      width: 150,
-      builder: (context) => [
-        ListTile(
-          trailing: const Icon(Icons.copy),
-          onTap: () => _onPressedCopyButton(context),
-          title: const Text('Copy'),
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    final hoverColor = isDarkMode ? Colors.green.shade500 : Colors.red.shade500;
+
+    return ContextMenuRegion(
+      contextMenu: SizedBox(
+        width: 150,
+        child: Card(
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(16)),
+          ),
+          clipBehavior: Clip.antiAliasWithSaveLayer,
+          elevation: 8,
+          child: Column(
+            children: [
+              ListTile(
+                hoverColor: hoverColor,
+                title: const Text('Copy'),
+                trailing: const Icon(Icons.copy),
+                onTap: () {
+                  context.contextMenuOverlay.hide();
+                  _onPressedCopyButton(context);
+                },
+              ),
+              const Divider(height: 1),
+              ListTile(
+                hoverColor: hoverColor,
+                title: const Text('Report'),
+                trailing: const Icon(Icons.report),
+                onTap: () {
+                  context.contextMenuOverlay.hide();
+                  _onPressedReportButton(context);
+                },
+              ),
+            ],
+          ),
         ),
-        const Divider(),
-        ListTile(
-          trailing: const Icon(Icons.report),
-          onTap: () => _onPressedReportButton(context),
-          title: const Text('Report'),
-        ),
-      ],
+      ),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 0.0),
         child: Card(
@@ -94,43 +116,14 @@ class DefinitionListTile extends ConsumerWidget {
                         // adding to favourites list
                         controller.addToFavourite(definition.id);
                         // show result to user with snackbark
-                        MotionToast.success(
-                          // title: const Text('Favourite'),
-                          description: const Text(
-                              'စိတ်ကြိုက်စာရင်းသို့ \nထည့်သွင်းလိုက်ပါပြီ'),
-                          constraints: const BoxConstraints(
-                            minWidth: 300,
-                            maxWidth: 350,
-                            minHeight: 100,
-                            maxHeight: 100,
-                          ),
-                          animationType: AnimationType.fromBottom,
-                          animationDuration: const Duration(milliseconds: 500),
-                          toastDuration: const Duration(milliseconds: 1500),
-                        ).show(context);
-                        // ScaffoldMessenger.of(context).showSnackBar(_buildSnackBar(
-                        //     context, 'စိတ်ကြိုက်စာရင်းသို့ ထည့်သွင်းလိုက်ပါပြီ'));
+                        _showSuccessToast(context,
+                            'စိတ်ကြိုက်စာရင်းသို့ \nထည့်သွင်းလိုက်ပါပြီ');
                       } else {
                         // removing from favourites list
                         controller.removeFromFavourite(definition.id);
                         // show result to user with snackbark
-                        MotionToast.delete(
-                          // title: const Text('Favourite'),
-                          description: const Text(
-                              'စိတ်ကြိုက်စာရင်းမှ \nပယ်ဖျက်လိုက်ပါပြီ'),
-                          constraints: const BoxConstraints(
-                            minWidth: 300,
-                            maxWidth: 350,
-                            minHeight: 100,
-                            maxHeight: 100,
-                          ),
-                          animationType: AnimationType.fromBottom,
-                          animationCurve: Curves.easeOut,
-                          animationDuration: const Duration(milliseconds: 500),
-                          toastDuration: const Duration(milliseconds: 1500),
-                        ).show(context);
-                        // ScaffoldMessenger.of(context).showSnackBar(_buildSnackBar(
-                        //     context, 'စိတ်ကြိုက်စာရင်းမှ ပယ်ဖျက်လိုက်ပါပြီ။'));
+                        _showDeleteToast(
+                            context, 'စိတ်ကြိုက်စာရင်းမှ\nပယ်ဖျက်လိုက်ပါပြီ');
                       }
                     },
                     icon: isInFavourites
@@ -155,9 +148,27 @@ class DefinitionListTile extends ConsumerWidget {
         text:
             '${definition.myanmar}\n${definition.english}\n${definition.pali}'));
 
+    _showSuccessToast(context, 'ကော်ပီကူးယူပြီးပါပြီ');
+  }
+
+  void _onPressedReportButton(BuildContext context) async {
+    final entryParmater =
+        '${definition.myanmar}\n${definition.english}\n${definition.pali}\npage-${definition.pageNumber}';
+    final url = Uri.parse(kReportUrl + entryParmater);
+    if (await canLaunchUrl(url)) {
+      launchUrl(url);
+    } else {
+      MotionToast.error(
+        description: const Text("Cannot report. Something's wrong."),
+        width: 300,
+      ).show(context);
+    }
+  }
+
+  void _showSuccessToast(BuildContext context, String message) {
     MotionToast.success(
       // title: const Text('Favourite'),
-      description: const Text('ကော်ပီကူးယူပြီးပါပြီ'),
+      description: Text(message, style: const TextStyle(color: Colors.black)),
       constraints: const BoxConstraints(
         minWidth: 300,
         maxWidth: 350,
@@ -170,19 +181,20 @@ class DefinitionListTile extends ConsumerWidget {
     ).show(context);
   }
 
-  void _onPressedReportButton(BuildContext context) async {
-    final entryParmater =
-        '${definition.myanmar}\n${definition.english}\n${definition.pali}\npage-${definition.pageNumber}';
-    final url = Uri.parse(kReportUrl + entryParmater);
-    if (await canLaunchUrl(url)) {
-      launchUrl(url);
-    } else {
-      MotionToast.error(
-        description: const Text(
-            "Cannot report. Something's wrong."),
-        width: 300,
-      ).show(context);
-    }
+  void _showDeleteToast(BuildContext context, String message) {
+    MotionToast.delete(
+      // title: const Text('Favourite'),
+      description: Text(message, style: const TextStyle(color: Colors.black)),
+      constraints: const BoxConstraints(
+        minWidth: 300,
+        maxWidth: 350,
+        minHeight: 100,
+        maxHeight: 100,
+      ),
+      animationType: AnimationType.fromBottom,
+      animationDuration: const Duration(milliseconds: 500),
+      toastDuration: const Duration(milliseconds: 1500),
+    ).show(context);
   }
 /*
   SnackBar _buildSnackBar(BuildContext context, String message) {

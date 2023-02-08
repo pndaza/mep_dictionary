@@ -22,7 +22,7 @@ dependencies:
   motion_toast: ^2.6.4
   url_launcher: ^6.1.9
   super_sliver_list: ^0.0.7
-  contextmenu: ^3.0.0
+  context_menus: ^1.0.2
 
 dev_dependencies:
   build_runner: ^2.1.2
