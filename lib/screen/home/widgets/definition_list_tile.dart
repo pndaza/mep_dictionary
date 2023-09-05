@@ -30,7 +30,7 @@ class DefinitionListTile extends ConsumerWidget {
         ref.read(homeViewControllerProvider.notifier).textToHighlight;
     // text style for normal text
     final textStyle =
-        Theme.of(context).textTheme.bodyText2!.copyWith(fontSize: fontSize);
+        Theme.of(context).textTheme.bodyMedium!.copyWith(fontSize: fontSize);
     // filterd word will be highlight
     // text sytle for highlight
     final textStyleHighlight = TextStyle(

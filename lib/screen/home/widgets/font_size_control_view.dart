@@ -14,8 +14,8 @@ class FontSizeControlView extends ConsumerWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         IconButton(
-          onPressed: () => controller.onIncrease(),
-          icon: const Icon(Icons.add),
+          onPressed: () => controller.onDecrease(),
+          icon: const Icon(Icons.remove),
           color: color,
         ),
         Text(
@@ -23,8 +23,8 @@ class FontSizeControlView extends ConsumerWidget {
           style: TextStyle(color: color),
         ),
         IconButton(
-          onPressed: () => controller.onDecrease(),
-          icon: const Icon(Icons.remove),
+          onPressed: () => controller.onIncrease(),
+          icon: const Icon(Icons.add),
           color: color,
         ),
       ],
