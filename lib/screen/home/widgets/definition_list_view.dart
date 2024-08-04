@@ -1,5 +1,8 @@
 import 'package:context_menus/context_menus.dart';
 import 'package:flutter/material.dart';
+import '../../../providers/home_controller.dart';
+import 'favourite_controller.dart';
+import 'package:provider/provider.dart';
 import 'package:super_sliver_list/super_sliver_list.dart';
 
 import '../../../model/definition.dart';
@@ -7,8 +10,7 @@ import 'definition_list_tile.dart';
 
 class DefinitionListView extends StatefulWidget {
   final List<Definition> definitions;
-  const DefinitionListView({Key? key, required this.definitions})
-      : super(key: key);
+  const DefinitionListView({super.key, required this.definitions});
 
   @override
   State<DefinitionListView> createState() => _DefinitionListViewState();
@@ -41,24 +43,62 @@ class _DefinitionListViewState extends State<DefinitionListView> {
 
   @override
   Widget build(BuildContext context) {
+    final homeController = context.read<HomeViewController>();
+    final favouritesController = context.read<FavouritesController>();
+    final filterdWord = homeController.filterWord;
     final childCount = widget.definitions.length;
     final sliverDelegate = SliverChildBuilderDelegate(
-      (context, index) =>
-          DefinitionListTile(definition: widget.definitions[index]),
+      (context, index) => DefinitionListTile(
+        key: Key('${widget.definitions[index].id}'),
+        definition: widget.definitions[index],
+        isFavourite: isFavourite(widget.definitions[index].id),
+        filterWord: filterdWord,
+        onAddtoFavourite: () {
+          favouritesController.addToFavourite(widget.definitions[index].id);
+          homeController.onFavouriteListChange();
+        },
+        onRemoveFromFavourite: () {
+          favouritesController
+              .removeFromFavourite(widget.definitions[index].id);
+          homeController.onFavouriteListChange();
+        },
+      ),
       childCount: childCount,
     );
 
     return ContextMenuOverlay(
-      child: Scrollbar(
-        controller: controller,
-        interactive: true,
-        child: CustomScrollView(
-          controller: controller,
-          slivers: [
-            SuperSliverList(delegate: sliverDelegate),
-          ],
+      child: ScrollConfiguration(
+        behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+        child: ScrollbarTheme(
+          data: ScrollbarThemeData(
+            interactive: true,
+            radius: const Radius.circular(8.0),
+            thickness: WidgetStateProperty.resolveWith<double>(
+              (states) {
+                if (states.contains(WidgetState.dragged) ||
+                    states.contains(WidgetState.focused) ||
+                    states.contains(WidgetState.hovered)) return 16;
+                return 8.0;
+              },
+            ),
+          ),
+          child: Scrollbar(
+            controller: controller,
+            interactive: true,
+            child: CustomScrollView(
+              controller: controller,
+              slivers: [
+                SuperSliverList(delegate: sliverDelegate),
+              ],
+            ),
+          ),
         ),
       ),
     );
+  }
+
+  bool isFavourite(int id) {
+    final favouritesController = context.read<FavouritesController>();
+    return favouritesController.isInFavourite(id);
   }
 }

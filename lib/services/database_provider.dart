@@ -3,8 +3,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:mep_dictionary/data/constants.dart';
-import 'package:mep_dictionary/services/prefs.dart';
+import '../data/constants.dart';
+import 'prefs.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 

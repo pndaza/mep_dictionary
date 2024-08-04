@@ -16,18 +16,30 @@ class DefinitionDatabaseRepository implements DefinitionRepository {
   @override
   Future<List<Definition>> fetchAll() async {
     final db = await databaseProvider.database;
-    final List<Map<String, dynamic>> results = await db.query(
-      dao.tableName,
-      columns: [
-        dao.columnID,
-        dao.columnMyamar,
-        dao.columnEnglish,
-        dao.columnPali,
-        dao.columnPageNumber
-      ],
-      // where: '${dao.columnPageNumber} > ?',
-      // whereArgs: [1060],
-    );
-    return dao.fromList(results);
+    final List<Definition> definitions = [];
+    const int chunkSize = 5000; // Number of rows to fetch at a time
+    int offset = 0;
+    while (true) {
+      final List<Map<String, dynamic>> results = await db.query(dao.tableName,
+          columns: [
+            dao.columnID,
+            dao.columnMyamar,
+            dao.columnEnglish,
+            dao.columnPali,
+            dao.columnPageNumber
+          ],
+          limit: chunkSize,
+          offset: offset
+          // where: '${dao.columnPageNumber} > ?',
+          // whereArgs: [1060],
+          );
+      if (results.isEmpty) {
+        break; // No more data to fetch
+      }
+      definitions.addAll(dao.fromList(results));
+    offset += chunkSize;
+    }
+
+    return definitions;
   }
 }

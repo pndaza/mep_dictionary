@@ -1,4 +1,4 @@
-import 'package:mep_dictionary/services/prefs.dart';
+import 'prefs.dart';
 
 class FavouritesService {
   List<int> get favourites =>

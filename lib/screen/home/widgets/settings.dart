@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mep_dictionary/providers/theme_settings_controller.dart';
+import 'package:provider/provider.dart';
 
+import '../../../providers/theme_settings_controller.dart';
 import 'font_size_control_view.dart';
 import 'info_dialog.dart';
 
 class Settings extends StatelessWidget {
-  const Settings({Key? key}) : super(key: key);
+  const Settings({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -20,64 +20,70 @@ class Settings extends StatelessWidget {
       child: Column(
         children: [
           const Divider(),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Card(
-              color: Theme.of(context).colorScheme.primary,
-              elevation: 8.0,
+          SettingTile(
               child: ListTile(
-                leading: const Icon(
-                  Icons.brightness_2_outlined,
-                  color: Colors.white,
-                ),
-                title: Text('Dark Mode', style: backdropTextStyle),
-                trailing: const _ThemeToggleSwitch(),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Card(
-              color: Theme.of(context).colorScheme.primary,
-              elevation: 8.0,
-              child: ListTile(
-                leading: const Icon(
-                  Icons.font_download_outlined,
-                  color: Colors.white,
-                ),
-                title: Text('Font Size', style: backdropTextStyle),
-                trailing: const FontSizeControlView(),
-              ),
-            ),
-          ),
-          const Divider(),
-          ListTile(
             leading: const Icon(
-              Icons.info_outline,
+              Icons.brightness_2_outlined,
               color: Colors.white,
             ),
-            title: Text('About Dictionary App', style: backdropTextStyle),
-            onTap: () async => showDialog<void>(
-                context: context, builder: (_) => const InfoDialog()),
-          ),
+            title: Text('Dark Mode', style: backdropTextStyle),
+            trailing: Switch(
+              activeColor: Colors.white,
+              activeTrackColor: Colors.greenAccent,
+              value: Theme.of(context).brightness == Brightness.dark,
+              onChanged: (value) {
+                context.read<ThemeSettingsController>().onToggleTheme();
+              },
+            ),
+          )),
+          SettingTile(
+              child: ListTile(
+            leading: const Icon(
+              Icons.font_download_outlined,
+              color: Colors.white,
+            ),
+            title: Text('Font Size', style: backdropTextStyle),
+            trailing: const FontSizeControlView(),
+          )),
+          const Divider(),
+          _InfoView(style: backdropTextStyle),
         ],
       ),
     );
   }
 }
 
-class _ThemeToggleSwitch extends ConsumerWidget {
-  const _ThemeToggleSwitch({Key? key}) : super(key: key);
+class SettingTile extends StatelessWidget {
+  const SettingTile({super.key, required this.child});
+  final Widget child;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final themeMode = ref.watch(themeSettingsProvider);
-    final bool isDarkMode = themeMode == ThemeMode.dark;
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Card(
+        color: Theme.of(context).colorScheme.primary,
+        elevation: 6.0,
+        child: child,
+      ),
+    );
+  }
+}
 
-    return Switch(
-        value: isDarkMode,
-        onChanged: (newValue) {
-          ref.read(themeSettingsProvider.notifier).onToggleTheme();
-        });
+class _InfoView extends StatelessWidget {
+  const _InfoView({required this.style});
+  final TextStyle style;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: const Icon(
+        Icons.info_outline,
+        color: Colors.white,
+      ),
+      title: Text('About Dictionary App', style: style),
+      onTap: () async => showDialog<void>(
+          context: context, builder: (_) => const InfoDialog()),
+    );
   }
 }

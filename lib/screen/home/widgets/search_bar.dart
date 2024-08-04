@@ -4,11 +4,10 @@ enum FilterMode { start, anywhere }
 
 class SearchFilterBar extends StatefulWidget {
   const SearchFilterBar(
-      {Key? key,
+      {super.key,
       required this.searchMode,
       required this.onFilterTextChanged,
-      required this.onFilterModeChanged})
-      : super(key: key);
+      required this.onFilterModeChanged});
   final FilterMode searchMode;
   final void Function(String) onFilterTextChanged;
   final void Function(FilterMode) onFilterModeChanged;
@@ -43,7 +42,7 @@ class _SearchFilterBarState extends State<SearchFilterBar> {
       margin: const EdgeInsets.all(8.0),
       decoration: BoxDecoration(
         // color: Theme.of(context).colorScheme.background,
-        borderRadius: BorderRadius.circular(32.0),
+        borderRadius: BorderRadius.circular(24.0),
         border: Border.all(color: Theme.of(context).colorScheme.primary),
       ),
       height: 56.0,
@@ -84,8 +83,7 @@ class _SearchFilterBarState extends State<SearchFilterBar> {
 
 class FilterModeButton extends StatefulWidget {
   const FilterModeButton(
-      {Key? key, required this.searchMode, required this.onChanged})
-      : super(key: key);
+      {super.key, required this.searchMode, required this.onChanged});
   final FilterMode searchMode;
   final Function(FilterMode) onChanged;
 
@@ -106,7 +104,8 @@ class _FilterModeButtonState extends State<FilterModeButton> {
   @override
   Widget build(BuildContext context) {
     return FilterChip(
-      label: const Text('အစတူ', textScaleFactor: 1.0),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+      label: const Text('အစတူ', textScaler: TextScaler.noScaling),
       labelStyle: TextStyle(
           fontSize: 16,
           color: _previousValue == true
@@ -130,7 +129,7 @@ class _FilterModeButtonState extends State<FilterModeButton> {
 }
 
 class ClearButton extends StatelessWidget {
-  const ClearButton({Key? key, required this.onClicked}) : super(key: key);
+  const ClearButton({super.key, required this.onClicked});
   final VoidCallback onClicked;
 
   @override

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:mep_dictionary/services/prefs.dart';
+import 'prefs.dart';
 
 class ThemeService {
   ThemeMode get themeMode =>

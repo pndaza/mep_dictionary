@@ -1,31 +1,35 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mep_dictionary/providers/font_size_settings_controller.dart';
+import 'package:provider/provider.dart';
 
-class FontSizeControlView extends ConsumerWidget {
-  const FontSizeControlView({Key? key}) : super(key: key);
+import 'font_size_settings_controller.dart';
+
+class FontSizeControlView extends StatelessWidget {
+  const FontSizeControlView({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final controller = ref.watch(fontSizeSettingsProvider.notifier);
-    final fontSize = ref.watch(fontSizeSettingsProvider);
-    final color = Theme.of(context).colorScheme.onPrimary;
+  Widget build(BuildContext context) {
+    final controller = context.read<FontSizeSettingsController>();
+    final primaryColor = Theme.of(context).colorScheme.onPrimary;
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         IconButton(
           onPressed: () => controller.onDecrease(),
           icon: const Icon(Icons.remove),
-          color: color,
+          color: primaryColor,
         ),
-        Text(
-          fontSize.round().toString(),
-          style: TextStyle(color: color),
-        ),
+        ValueListenableBuilder(
+            valueListenable: controller.fontSize,
+            builder: (_, fontSize, __) {
+              return Text(
+                fontSize.toString(),
+                style: TextStyle(color: primaryColor),
+              );
+            }),
         IconButton(
           onPressed: () => controller.onIncrease(),
           icon: const Icon(Icons.add),
-          color: color,
+          color: primaryColor,
         ),
       ],
     );

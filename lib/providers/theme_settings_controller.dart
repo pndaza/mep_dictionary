@@ -1,21 +1,23 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mep_dictionary/services/theme_service.dart';
+import '../services/theme_service.dart';
 
-final themeSettingsProvider =
-    StateNotifierProvider<ThemeSettingsController, ThemeMode>(
-        (ref) => ThemeSettingsController(ThemeService()));
+class ThemeSettingsController {
+  ThemeSettingsController(this._themeService);
+  final ThemeService _themeService;
 
-class ThemeSettingsController extends StateNotifier<ThemeMode> {
-  ThemeSettingsController(this.themeService) : super(themeService.themeMode);
+  late final ValueNotifier<ThemeMode> _themeMode =  ValueNotifier<ThemeMode>(_themeService.themeMode);
+  ValueListenable<ThemeMode> get themeMode => _themeMode;
 
-  final ThemeService themeService;
-  ThemeMode get themeMode => themeService.themeMode;
+  // ThemeMode get themeMode => _themeService.themeMode;
 
   void onToggleTheme() {
-    final newThemeMode =
-        themeMode == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark;
-    state = newThemeMode;
-    themeService.updateThemeMode(newThemeMode);
+
+    final currentThemeMode = themeMode.value;
+    final newThemeMode = currentThemeMode == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark;
+    _themeMode.value = newThemeMode;
+
+    _themeService.updateThemeMode(newThemeMode);
+    // notifyListeners();
   }
 }

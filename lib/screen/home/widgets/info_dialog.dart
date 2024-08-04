@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:mep_dictionary/data/constants.dart';
+import '../../../data/constants.dart';
 
 class InfoDialog extends StatelessWidget {
-  const InfoDialog({Key? key}) : super(key: key);
+  const InfoDialog({super.key});
 
   @override
   Widget build(BuildContext context) {
