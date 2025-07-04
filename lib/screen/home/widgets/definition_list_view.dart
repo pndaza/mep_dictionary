@@ -72,13 +72,16 @@ class _DefinitionListViewState extends State<DefinitionListView> {
         child: ScrollbarTheme(
           data: ScrollbarThemeData(
             interactive: true,
+            crossAxisMargin: 4,
             radius: const Radius.circular(8.0),
             thickness: WidgetStateProperty.resolveWith<double>(
               (states) {
                 if (states.contains(WidgetState.dragged) ||
                     states.contains(WidgetState.focused) ||
-                    states.contains(WidgetState.hovered)) return 16;
-                return 8.0;
+                    states.contains(WidgetState.hovered)) {
+                  return 24;
+                }
+                return 12.0;
               },
             ),
           ),

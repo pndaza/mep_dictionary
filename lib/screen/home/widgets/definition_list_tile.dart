@@ -8,8 +8,6 @@ import 'package:mep_dictionary/data/constants.dart';
 import 'package:mep_dictionary/screen/home/widgets/font_size_settings_controller.dart';
 import 'package:motion_toast/motion_toast.dart';
 import 'package:provider/provider.dart';
-// import 'package:motion_toast/resources/arrays.dart';
-// import 'package:substring_highlight/substring_highlight.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../model/definition.dart';
@@ -212,7 +210,7 @@ class _DefinitionListTileState extends State<DefinitionListTile> {
         minHeight: 100,
         maxHeight: 100,
       ),
-      animationType: AnimationType.fromBottom,
+      animationType: AnimationType.slideInFromTop,
       animationDuration: const Duration(milliseconds: 300),
       toastDuration: const Duration(milliseconds: 1000),
     ).show(context);
@@ -228,7 +226,7 @@ class _DefinitionListTileState extends State<DefinitionListTile> {
         minHeight: 100,
         maxHeight: 100,
       ),
-      animationType: AnimationType.fromBottom,
+      animationType: AnimationType.slideInFromBottom,
       animationDuration: const Duration(milliseconds: 300),
       toastDuration: const Duration(milliseconds: 1000),
     ).show(context);

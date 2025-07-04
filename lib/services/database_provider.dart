@@ -26,7 +26,7 @@ class DatabaseProvider {
   }
 
 // Open Assets Database
-  _initDatabase() async {
+  Future<Database> _initDatabase() async {
     // print('initializing Database');
     var dbPath = await getDatabasesPath();
     var path = join(dbPath, _databaseName);
