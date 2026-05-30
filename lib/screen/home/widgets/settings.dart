@@ -28,7 +28,7 @@ class Settings extends StatelessWidget {
             ),
             title: Text('Dark Mode', style: backdropTextStyle),
             trailing: Switch(
-              activeColor: Colors.white,
+              activeThumbColor: Colors.white,
               activeTrackColor: Colors.greenAccent,
               value: Theme.of(context).brightness == Brightness.dark,
               onChanged: (value) {
@@ -76,14 +76,17 @@ class _InfoView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      leading: const Icon(
-        Icons.info_outline,
-        color: Colors.white,
+    return Material(
+      color: Colors.transparent,
+      child: ListTile(
+        leading: const Icon(
+          Icons.info_outline,
+          color: Colors.white,
+        ),
+        title: Text('About Dictionary App', style: style),
+        onTap: () async => showDialog<void>(
+            context: context, builder: (_) => const InfoDialog()),
       ),
-      title: Text('About Dictionary App', style: style),
-      onTap: () async => showDialog<void>(
-          context: context, builder: (_) => const InfoDialog()),
     );
   }
 }
